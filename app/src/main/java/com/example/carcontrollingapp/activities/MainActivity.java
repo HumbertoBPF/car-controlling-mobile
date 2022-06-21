@@ -46,15 +46,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_synchro) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Synchronize data")
-                    .setMessage("You are going to launch a synchronization. " +
-                            "Please, make sure that you have an active internet connexion.")
-                    .setPositiveButton("Launch", new DialogInterface.OnClickListener() {
+            builder.setTitle(R.string.synchro_confirmation_dialog_title)
+                    .setMessage(getString(R.string.synchro_confirmation_dialog_message))
+                    .setPositiveButton(R.string.synchro_confirmation_dialog_yes_btn, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                            progressDialog.setTitle("Resources synchronization");
-                            progressDialog.setMessage("Synchronization in progress...");
+                            progressDialog.setTitle(getString(R.string.synchro_progress_dialog_title));
+                            progressDialog.setMessage(getString(R.string.synchro_progress_dialog_message));
                             progressDialog.show();
                             new Handler().postDelayed(new Runnable() {
                                 @Override
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                             }, 2000);
                         }
                     })
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                    .setNegativeButton(R.string.synchro_confirmation_dialog_no_btn, (dialog, which) -> dialog.dismiss());
             builder.create().show();
             return true;
         }
