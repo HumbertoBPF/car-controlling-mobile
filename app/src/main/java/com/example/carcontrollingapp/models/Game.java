@@ -43,4 +43,9 @@ public class Game {
     public void setGameName(String gameName) {
         this.gameName = gameName;
     }
+
+    @Override
+    public String toString() {
+        return this.gameName;
+    }
 }
