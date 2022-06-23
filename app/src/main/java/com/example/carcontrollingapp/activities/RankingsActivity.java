@@ -1,18 +1,17 @@
 package com.example.carcontrollingapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.carcontrollingapp.R;
-import com.example.carcontrollingapp.RankingAdapter;
+import com.example.carcontrollingapp.adapters.RankingAdapter;
 import com.example.carcontrollingapp.daos.GameDao;
 import com.example.carcontrollingapp.daos.ScoreDao;
 import com.example.carcontrollingapp.interfaces.OnResultListener;
@@ -58,7 +57,7 @@ public class RankingsActivity extends AppCompatActivity implements AdapterView.O
                     gameSpinner.setAdapter(adapter);
 
                     Game defaultGame = (Game) gameSpinner.getSelectedItem();
-                    scoreDao.getScoreByGameTask(defaultGame.getId(), new OnResultListener<List<Score>>() {
+                    scoreDao.getRankingByGameTask(defaultGame.getId(), new OnResultListener<List<Score>>() {
                         @Override
                         public void onResult(List<Score> result) {
                             rankingsRecyclerView.setAdapter(new RankingAdapter(result));
@@ -72,7 +71,7 @@ public class RankingsActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Game selectedGame = (Game) parent.getItemAtPosition(position);
-        scoreDao.getScoreByGameTask(selectedGame.getId(), new OnResultListener<List<Score>>() {
+        scoreDao.getRankingByGameTask(selectedGame.getId(), new OnResultListener<List<Score>>() {
             @Override
             public void onResult(List<Score> result) {
                 rankingsRecyclerView.setAdapter(new RankingAdapter(result));

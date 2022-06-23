@@ -1,4 +1,4 @@
-package com.example.carcontrollingapp;
+package com.example.carcontrollingapp.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.carcontrollingapp.R;
 import com.example.carcontrollingapp.models.Score;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.RankingV
         }
 
         public void bind(Score score, int position){
-            this.positionTextView.setText(position+"");
+            this.positionTextView.setText((position+1)+"");
             this.usernameTextView.setText(score.getUser());
             this.scoreTextView.setText(score.getScore().toString());
         }

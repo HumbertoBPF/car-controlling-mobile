@@ -17,14 +17,33 @@ public abstract class ScoreDao extends BaseDao<Score> {
     }
 
     @Query("SELECT id, min(score) AS score, date, user, gameId FROM score WHERE gameId = :gameId GROUP BY user")
-    protected abstract List<Score> getScoreByGame(Long gameId);
+    protected abstract List<Score> getRankingByGame(Long gameId);
 
-    public AsyncTask<Void, Void, List<Score>> getScoreByGameTask(Long gameId,
-                                                                 OnResultListener<List<Score>> onResultListener){
+    @Query("SELECT * FROM score WHERE gameId = :gameId AND user = :username")
+    protected abstract List<Score> getScoresByGameAndByUser(Long gameId, String username);
+
+    public AsyncTask<Void, Void, List<Score>> getRankingByGameTask(Long gameId,
+                                                                   OnResultListener<List<Score>> onResultListener){
         return new AsyncTask<Void, Void, List<Score>>() {
             @Override
             protected List<Score> doInBackground(Void... voids) {
-                return getScoreByGame(gameId);
+                return getRankingByGame(gameId);
+            }
+
+            @Override
+            protected void onPostExecute(List<Score> scores) {
+                super.onPostExecute(scores);
+                onResultListener.onResult(scores);
+            }
+        };
+    }
+
+    public AsyncTask<Void, Void, List<Score>> getScoresByGameAndByUserTask(Long gameId, String username,
+                                                                           OnResultListener<List<Score>> onResultListener){
+        return new AsyncTask<Void, Void, List<Score>>() {
+            @Override
+            protected List<Score> doInBackground(Void... voids) {
+                return getScoresByGameAndByUser(gameId, username);
             }
 
             @Override

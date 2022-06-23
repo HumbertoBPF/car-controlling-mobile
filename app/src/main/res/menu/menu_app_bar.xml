@@ -6,4 +6,17 @@
         android:icon="@drawable/ic_action_synchro"
         android:title="@string/synchro_icon_text"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_account"
+        android:icon="@drawable/ic_action_account"
+        android:title="@string/account_icon_text"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_logout"
+        android:icon="@drawable/ic_action_logout"
+        android:title="@string/logout_icon_text"
+        app:showAsAction="ifRoom"/>
+
 </menu>
