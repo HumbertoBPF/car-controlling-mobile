@@ -33,6 +33,7 @@ public class FormUserActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private EditText passwordConfirmationEditText;
     private Button submitButton;
+    // Flag specifying if this form is going to perform a PUT(update) or a POST(create)
     private boolean isUpdate;
     private SharedPreferences sp;
 
@@ -135,7 +136,11 @@ public class FormUserActivity extends AppCompatActivity {
             });
         }
     }
-
+    /**
+     * Parses the JSON returned by the API when some validation error is raised.
+     * @param response Retrofit response object
+     * @return a String message corresponding to the validation error
+     */
     private String getValidationErrorMessage(Response<User> response) {
         String error = getString(R.string.warning_form_validation);
 

@@ -34,6 +34,11 @@ public class User {
         this.email = email;
     }
 
+    /**
+     * Verifies if the users are authenticated, i.e. if their credentials are in the Shared Preferences file.
+     * @param context Context of the activity calling this method.
+     * @return a boolean indicating if the user is authenticated.
+     */
     public static boolean isUserAuthenticated(Context context){
         SharedPreferences sp = context.
                 getSharedPreferences(context.getString(R.string.sp_filename), MODE_PRIVATE);
@@ -42,7 +47,13 @@ public class User {
                 (sp.getString(context.getString(R.string.sp_email),null) != null) &&
                 (sp.getString(context.getString(R.string.sp_password),null) != null);
     }
-
+    /**
+     * Saves the specified user credentials(username, email and password) in the Shared Preferences file.
+     * @param context Context of the activity calling this method
+     * @param username username to be saved.
+     * @param email email to be saved.
+     * @param password password to be saved.
+     */
     public static void saveUserCredentials(Context context, String username, String email, String password){
         SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.sp_filename), MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -53,7 +64,10 @@ public class User {
 
         editor.apply();
     }
-
+    /**
+     * Deletes user credentials(username, email and password) from Shared Preferences.
+     * @param context Context of the activity calling this method.
+     */
     public static void deleteUserCredentials(Context context){
         SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.sp_filename), MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
