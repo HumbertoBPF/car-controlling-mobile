@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    android:layout_margin="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="5dp">
+
+        <TextView
+            android:id="@+id/ad_title_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/ad_image_view"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            tools:text="Title ad"/>
+
+        <ImageView
+            android:id="@+id/ad_image_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ad_title_text_view"
+            app:layout_constraintBottom_toTopOf="@id/ad_description_text_view"
+            tools:src="@drawable/parking_game"/>
+
+        <TextView
+            android:id="@+id/ad_description_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ad_image_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="16sp"
+            android:gravity="center"
+            tools:text="Add text"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -18,6 +18,6 @@ public class ScoresSynchronization extends ResourcesSynchronization<Score> {
             public Call<List<Score>> getCallable() {
                 return CarControllerAPIHelper.getApiObject().getScores();
             }
-        }, AppDatabase.getInstance(context).getScoreDao(), dialog, null);
+        }, AppDatabase.getInstance(context).getScoreDao(), dialog, new AdsSynchronization(context, dialog));
     }
 }

@@ -11,32 +11,63 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carcontrollingapp.R;
+import com.example.carcontrollingapp.adapters.AdAdapter;
+import com.example.carcontrollingapp.async_tasks.ClearTablesTask;
+import com.example.carcontrollingapp.daos.AdsDao;
+import com.example.carcontrollingapp.interfaces.OnResultListener;
+import com.example.carcontrollingapp.models.Ad;
 import com.example.carcontrollingapp.retrofit.synchronization.GamesSynchronization;
+import com.example.carcontrollingapp.room.AppDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private RecyclerView adsRecyclerView;
+    private TextView warningNoDataTextView;
     private FloatingActionButton rankingsButton;
+    private AdsDao adsDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        adsRecyclerView = findViewById(R.id.ads_recycler_view);
+        warningNoDataTextView = findViewById(R.id.warning_no_data_text_view);
         rankingsButton = findViewById(R.id.rankings_button);
-        
+
+        adsDao = AppDatabase.getInstance(this).getAdsDao();
+
         rankingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, RankingsActivity.class));
             }
         });
+    }
+
+    private void loadAds() {
+        adsDao.getAllRecordsTask(new OnResultListener<List<Ad>>() {
+            @Override
+            public void onResult(List<Ad> result) {
+                if (result.size() == 0){
+                    warningNoDataTextView.setVisibility(View.VISIBLE);
+                }else{
+                    warningNoDataTextView.setVisibility(View.GONE);
+                }
+                adsRecyclerView.setAdapter(new AdAdapter(MainActivity.this, result));
+            }
+        }).execute();
     }
 
     @Override
@@ -86,11 +117,24 @@ public class MainActivity extends AppCompatActivity {
         ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setTitle(getString(R.string.synchro_progress_dialog_title));
         progressDialog.setMessage(getString(R.string.synchro_progress_dialog_message));
+        progressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                loadAds();
+            }
+        });
         progressDialog.show();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                new GamesSynchronization(MainActivity.this, progressDialog).execute();
+                // Clear all tables before launching a synchro in order to make the local databases to
+                // be completely identical to the databases on the server
+                new ClearTablesTask(MainActivity.this, new OnResultListener<Void>() {
+                    @Override
+                    public void onResult(Void result) {
+                        new GamesSynchronization(MainActivity.this, progressDialog).execute();
+                    }
+                }).execute();
                 dialog.dismiss();
             }
         }, 2000);
@@ -112,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        loadAds();
         invalidateOptionsMenu();
     }
 }

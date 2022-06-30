@@ -6,6 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ads_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/warning_no_data_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:text="@string/warning_no_data"
+        android:visibility="gone"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/rankings_button"
         android:layout_width="wrap_content"

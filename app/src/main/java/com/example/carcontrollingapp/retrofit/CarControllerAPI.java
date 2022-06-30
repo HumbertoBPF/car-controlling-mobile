@@ -1,5 +1,6 @@
 package com.example.carcontrollingapp.retrofit;
 
+import com.example.carcontrollingapp.models.Ad;
 import com.example.carcontrollingapp.models.Game;
 import com.example.carcontrollingapp.models.Score;
 import com.example.carcontrollingapp.models.User;
@@ -20,6 +21,9 @@ public interface CarControllerAPI {
 
     @GET("scores")
     Call<List<Score>> getScores();
+
+    @GET("ads")
+    Call<List<Ad>> getAds();
 
     @GET("users")
     Call<User> login(@Header("Authorization") String authToken);
