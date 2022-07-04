@@ -20,7 +20,7 @@ Some screenshots are provided below in order to make a tour through the mobile a
 
 - Profile screen
 
-![image](https://user-images.githubusercontent.com/31226297/175857140-19f8bbc7-cc4f-4a68-91fe-cd5f265a4609.png)
+![image](https://user-images.githubusercontent.com/31226297/176583076-88fbd35d-f166-456f-94ab-65061014bf97.png)
 
 - Rankings screen
 
