@@ -36,6 +36,6 @@
     <string name="warning_empty_fields">All fields are required</string>
     <string name="warning_password_len_out_of_range">Password length out of range(passwords must be 6 and 30 characters long)</string>
     <string name="warning_form_validation">Form validation error. Please, verify the values specified in the form.</string>
-    <string name="welcome_message">\"Welcome, \"</string>
+    <string name="welcome_message">Welcome,\u0020</string>
     <string name="success_create_account">Account successfully created</string>
 </resources>

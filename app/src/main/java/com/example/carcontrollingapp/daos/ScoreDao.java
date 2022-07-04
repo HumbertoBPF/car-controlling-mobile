@@ -16,7 +16,7 @@ public abstract class ScoreDao extends BaseDao<Score> {
         super("Score");
     }
 
-    @Query("SELECT id, min(score) AS score, date, user, gameId FROM score WHERE gameId = :gameId GROUP BY user")
+    @Query("SELECT id, min(score) AS score, date, user, gameId FROM score WHERE gameId = :gameId GROUP BY user ORDER BY score")
     protected abstract List<Score> getRankingByGame(Long gameId);
 
     @Query("SELECT * FROM score WHERE gameId = :gameId AND user = :username")
