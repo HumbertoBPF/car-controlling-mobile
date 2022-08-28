@@ -57,13 +57,17 @@ public class RankingsActivity extends AppCompatActivity implements AdapterView.O
                     gameSpinner.setAdapter(adapter);
 
                     Game defaultGame = (Game) gameSpinner.getSelectedItem();
-                    scoreDao.getRankingByGameTask(defaultGame.getId(), new OnResultListener<List<Score>>() {
-                        @Override
-                        public void onResult(List<Score> result) {
-                            rankingsRecyclerView.setAdapter(new RankingAdapter(result));
-                        }
-                    }).execute();
+                    updateRanking(defaultGame);
                 }
+            }
+        }).execute();
+    }
+
+    private void updateRanking(Game game) {
+        scoreDao.getRankingByGameTask(game.getId(), new OnResultListener<List<Score>>() {
+            @Override
+            public void onResult(List<Score> result) {
+                rankingsRecyclerView.setAdapter(new RankingAdapter(result));
             }
         }).execute();
     }
@@ -71,12 +75,7 @@ public class RankingsActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Game selectedGame = (Game) parent.getItemAtPosition(position);
-        scoreDao.getRankingByGameTask(selectedGame.getId(), new OnResultListener<List<Score>>() {
-            @Override
-            public void onResult(List<Score> result) {
-                rankingsRecyclerView.setAdapter(new RankingAdapter(result));
-            }
-        }).execute();
+        updateRanking(selectedGame);
     }
 
     @Override

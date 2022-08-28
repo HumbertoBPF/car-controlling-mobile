@@ -16,6 +16,15 @@ public class Score {
     @SerializedName("game")
     private Long gameId;
 
+    public Score(){
+
+    }
+
+    public Score(Long score, Long gameId) {
+        this.score = score;
+        this.gameId = gameId;
+    }
+
     public Score(Long score, String date, String user, Long gameId) {
         this.score = score;
         this.date = date;

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="..\:/Users/Humberto/Desktop/Humberto/Study/CarControllingApp/app/src/main/res/drawable-anydpi/ic_action_synchro.xml" value="0.14635416666666667" />
         <entry key="..\:/Users/Humberto/Desktop/Humberto/Study/CarControllingApp/app/src/main/res/layout/activity_form_user.xml" value="0.1897644927536232" />
         <entry key="..\:/Users/Humberto/Desktop/Humberto/Study/CarControllingApp/app/src/main/res/layout/activity_login.xml" value="0.1897644927536232" />
@@ -17,6 +18,8 @@
         <entry key="..\:/Users/Humberto/Desktop/Humberto/Study/CarControllingApp/app/src/main/res/layout/item_score_history_adapter.xml" value="0.1897644927536232" />
         <entry key="..\:/Users/Humberto/Desktop/Humberto/Study/CarControllingApp/app/src/main/res/menu/app_bar.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Humberto/Desktop/Humberto/Study/CarControllingApp/app/src/main/res/menu/menu_app_bar.xml" value="0.2328125" />
+        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.1140625" />
+        <entry key="app/src/main/res/layout/item_score_history_adapter.xml" value="0.15989583333333332" />
       </map>
     </option>
   </component>

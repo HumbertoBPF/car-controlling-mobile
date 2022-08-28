@@ -32,7 +32,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView adsRecyclerView;
+    public RecyclerView adsRecyclerView;
     private TextView warningNoDataTextView;
     private FloatingActionButton rankingsButton;
     private AdsDao adsDao;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void loadAds() {
+    public void loadAds() {
         adsDao.getAllRecordsTask(new OnResultListener<List<Ad>>() {
             @Override
             public void onResult(List<Ad> result) {

@@ -13,12 +13,10 @@ import com.example.carcontrollingapp.models.Score;
 
 import java.util.List;
 
-public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.RankingViewHolder> {
-
-    private List<Score> scores;
+public class RankingAdapter extends ScoreAdapter<RankingAdapter.RankingViewHolder> {
 
     public RankingAdapter(List<Score> scores) {
-        this.scores = scores;
+        super(scores);
     }
 
     @NonNull
@@ -33,16 +31,11 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.RankingV
         holder.bind(scores.get(position), position);
     }
 
-    @Override
-    public int getItemCount() {
-        return scores.size();
-    }
-
     class RankingViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView positionTextView;
-        private TextView usernameTextView;
-        private TextView scoreTextView;
+        private final TextView positionTextView;
+        private final TextView usernameTextView;
+        private final TextView scoreTextView;
 
         public RankingViewHolder(@NonNull View itemView) {
             super(itemView);

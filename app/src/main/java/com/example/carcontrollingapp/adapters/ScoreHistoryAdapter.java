@@ -13,12 +13,10 @@ import com.example.carcontrollingapp.models.Score;
 
 import java.util.List;
 
-public class ScoreHistoryAdapter extends RecyclerView.Adapter<ScoreHistoryAdapter.ScoreHistoryViewHolder> {
-
-    private List<Score> scores;
+public class ScoreHistoryAdapter extends ScoreAdapter<ScoreHistoryAdapter.ScoreHistoryViewHolder> {
 
     public ScoreHistoryAdapter(List<Score> scores) {
-        this.scores = scores;
+        super(scores);
     }
 
     @NonNull
@@ -34,15 +32,10 @@ public class ScoreHistoryAdapter extends RecyclerView.Adapter<ScoreHistoryAdapte
         holder.bind(scores.get(position));
     }
 
-    @Override
-    public int getItemCount() {
-        return scores.size();
-    }
-
     class ScoreHistoryViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView dateTextView;
-        private TextView scoreTextView;
+        private final TextView dateTextView;
+        private final TextView scoreTextView;
 
         public ScoreHistoryViewHolder(@NonNull View itemView) {
             super(itemView);

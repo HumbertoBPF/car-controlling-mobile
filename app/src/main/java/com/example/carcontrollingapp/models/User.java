@@ -34,6 +34,14 @@ public class User {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     /**
      * Verifies if the users are authenticated, i.e. if their credentials are in the Shared Preferences file.
      * @param context Context of the activity calling this method.

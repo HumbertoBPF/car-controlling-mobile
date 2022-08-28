@@ -1,9 +1,8 @@
 package com.example.carcontrollingapp.activities;
 
+import static com.example.carcontrollingapp.models.User.deleteUserCredentials;
 import static com.example.carcontrollingapp.models.User.saveUserCredentials;
 import static com.example.carcontrollingapp.retrofit.CarControllerAPIHelper.getAuthToken;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carcontrollingapp.R;
 import com.example.carcontrollingapp.models.User;
@@ -36,6 +37,7 @@ public class FormUserActivity extends AppCompatActivity {
     // Flag specifying if this form is going to perform a PUT(update) or a POST(create)
     private boolean isUpdate;
     private SharedPreferences sp;
+    private final CarControllerAPIHelper carControllerAPIHelper = new CarControllerAPIHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,86 +57,77 @@ public class FormUserActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isUpdate){
-                    updateAccount();
-                }else{
-                    createAccount();
+                String emailInput = emailEditText.getText().toString();
+                String usernameInput = usernameEditText.getText().toString();
+                String passwordInput = passwordEditText.getText().toString();
+                String passwordConfirmationInput = passwordConfirmationEditText.getText().toString();
+
+                if (!passwordInput.equals(passwordConfirmationInput)){
+                    Toast.makeText(FormUserActivity.this, R.string.warning_passwords_matching, Toast.LENGTH_SHORT).show();
+                }else {
+                    User user = new User(usernameInput, emailInput, passwordInput);
+                    if (isUpdate){
+                        updateAccount(user);
+                    }else{
+                        createAccount(user);
+                    }
                 }
             }
         });
     }
 
-    private void updateAccount() {
-        String newEmail = emailEditText.getText().toString();
-        String newUsername = usernameEditText.getText().toString();
-        String newPassword = passwordEditText.getText().toString();
-        String passwordConfirmation = passwordConfirmationEditText.getText().toString();
-
-        if (!newPassword.equals(passwordConfirmation)){
-            Toast.makeText(FormUserActivity.this, R.string.warning_passwords_matching, Toast.LENGTH_SHORT).show();
-        }else{
-            User user = new User(newUsername, newEmail, newPassword);
-
-            String username = sp.getString(getString(R.string.sp_username),"");
-            String password = sp.getString(getString(R.string.sp_password),"");
-            Call<User> call = CarControllerAPIHelper.getApiObject().updateUser(getAuthToken(username, password), user);
-            call.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.isSuccessful()){
-                        Toast.makeText(FormUserActivity.this, R.string.sucess_account_update, Toast.LENGTH_SHORT).show();
-                        saveUserCredentials(FormUserActivity.this, newUsername, newEmail, newPassword);
-                        finish();
-                    }else if (response.code() == 400){
-                        String error = getValidationErrorMessage(response);
-
-                        Toast.makeText(FormUserActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(FormUserActivity.this, R.string.warning_connexion_error, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
+    private void updateAccount(User user) {
+        String username = sp.getString(getString(R.string.sp_username),"");
+        String password = sp.getString(getString(R.string.sp_password),"");
+        Call<User> call = carControllerAPIHelper.getApiObject().updateUser(getAuthToken(username, password), user);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(FormUserActivity.this, R.string.sucess_account_update, Toast.LENGTH_SHORT).show();
+                    saveUserCredentials(FormUserActivity.this, user.getUsername(), user.getEmail(), user.getPassword());
+                    finish();
+                }else if (response.code() == 403){
+                    deleteUserCredentials(FormUserActivity.this);
+                    Toast.makeText(FormUserActivity.this, R.string.warning_auth_error, Toast.LENGTH_SHORT).show();
+                    finish();
+                }else if (response.code() == 400){
+                    String error = getValidationErrorMessage(response);
+                    Toast.makeText(FormUserActivity.this, error, Toast.LENGTH_SHORT).show();
+                }else{
                     Toast.makeText(FormUserActivity.this, R.string.warning_connexion_error, Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(FormUserActivity.this, R.string.warning_connexion_error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void createAccount() {
-        String newEmail = emailEditText.getText().toString();
-        String newUsername = usernameEditText.getText().toString();
-        String newPassword = passwordEditText.getText().toString();
-        String passwordConfirmation = passwordConfirmationEditText.getText().toString();
+    private void createAccount(User user) {
+        Call<User> call = carControllerAPIHelper.getApiObject().signup(user);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(FormUserActivity.this, R.string.success_create_account, Toast.LENGTH_SHORT).show();
+                    finish();
+                }else if (response.code() == 400){
+                    String error = getValidationErrorMessage(response);
 
-        if (!newPassword.equals(passwordConfirmation)){
-            Toast.makeText(FormUserActivity.this, R.string.warning_passwords_matching, Toast.LENGTH_SHORT).show();
-        }else{
-            User user = new User(newUsername, newEmail, newPassword);
-
-            Call<User> call = CarControllerAPIHelper.getApiObject().signup(user);
-            call.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.isSuccessful()){
-                        Toast.makeText(FormUserActivity.this, R.string.success_create_account, Toast.LENGTH_SHORT).show();
-                        finish();
-                    }else if (response.code() == 400){
-                        String error = getValidationErrorMessage(response);
-
-                        Toast.makeText(FormUserActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(FormUserActivity.this, R.string.warning_connexion_error, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
+                    Toast.makeText(FormUserActivity.this, error, Toast.LENGTH_SHORT).show();
+                }else{
                     Toast.makeText(FormUserActivity.this, R.string.warning_connexion_error, Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(FormUserActivity.this, R.string.warning_connexion_error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     /**
      * Parses the JSON returned by the API when some validation error is raised.

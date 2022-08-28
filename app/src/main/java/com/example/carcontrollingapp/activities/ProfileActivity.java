@@ -1,6 +1,7 @@
 package com.example.carcontrollingapp.activities;
 
 import static com.example.carcontrollingapp.models.User.deleteUserCredentials;
+import static com.example.carcontrollingapp.models.User.isUserAuthenticated;
 import static com.example.carcontrollingapp.retrofit.CarControllerAPIHelper.getAuthToken;
 
 import android.app.ProgressDialog;
@@ -83,14 +84,8 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                 gameSpinner.setOnItemSelectedListener(ProfileActivity.this);
                 gameSpinner.setAdapter(adapter);
 
-                Game defaultGame = (Game) gameSpinner.getSelectedItem();
-                scoreDao.getScoresByGameAndByUserTask(defaultGame.getId(), username,
-                        new OnResultListener<List<Score>>() {
-                            @Override
-                            public void onResult(List<Score> result) {
-                                historyScoreRecyclerView.setAdapter(new ScoreHistoryAdapter(result));
-                            }
-                        }).execute();
+                Game game = (Game) gameSpinner.getSelectedItem();
+                updateScoreRecyclerView(game);
             }
         }).execute();
     }
@@ -141,7 +136,7 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Call<Void> call = CarControllerAPIHelper.getApiObject()
+                Call<Void> call = new CarControllerAPIHelper().getApiObject()
                         .deleteUser(getAuthToken(username, password));
                 call.enqueue(new Callback<Void>() {
                     @Override
@@ -152,7 +147,13 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
                                     R.string.success_account_deletion,
                                     Toast.LENGTH_SHORT).show();
                             finish();
-                        }else{
+                        }else if (response.code() == 403){
+                            deleteUserCredentials(ProfileActivity.this);
+                            Toast.makeText(ProfileActivity.this,
+                                    R.string.auth_error_account_deletion,
+                                    Toast.LENGTH_SHORT).show();
+                            finish();
+                        }else {
                             Toast.makeText(ProfileActivity.this,
                                     R.string.warning_connexion_error,
                                     Toast.LENGTH_SHORT).show();
@@ -175,12 +176,18 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Game selectedGame = (Game) parent.getItemAtPosition(position);
-        scoreDao.getScoresByGameAndByUserTask(selectedGame.getId(), username, new OnResultListener<List<Score>>() {
-            @Override
-            public void onResult(List<Score> result) {
-                historyScoreRecyclerView.setAdapter(new ScoreHistoryAdapter(result));
-            }
-        }).execute();
+        updateScoreRecyclerView(selectedGame);
+    }
+
+    private void updateScoreRecyclerView(Game game) {
+        if (game != null){
+            scoreDao.getScoresByGameAndByUserTask(game.getId(), username, new OnResultListener<List<Score>>() {
+                @Override
+                public void onResult(List<Score> result) {
+                    historyScoreRecyclerView.setAdapter(new ScoreHistoryAdapter(result));
+                }
+            }).execute();
+        }
     }
 
     @Override
@@ -191,6 +198,11 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!isUserAuthenticated(this)) {
+            finish();
+        }
+
         username = sp.getString(getString(R.string.sp_username), "");
         String email = sp.getString(getString(R.string.sp_email), "");
         password = sp.getString(getString(R.string.sp_password), "");

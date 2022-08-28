@@ -16,7 +16,7 @@ public class AdsSynchronization extends ResourcesSynchronization<Ad>{
         super(context, "Ad", new ResourcesCallable<List<Ad>>() {
             @Override
             public Call<List<Ad>> getCallable() {
-                return CarControllerAPIHelper.getApiObject().getAds();
+                return new CarControllerAPIHelper().getApiObject().getAds();
             }
         }, AppDatabase.getInstance(context).getAdsDao(), dialog, null);
     }

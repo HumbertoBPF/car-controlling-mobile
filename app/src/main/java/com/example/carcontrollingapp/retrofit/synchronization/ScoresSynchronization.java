@@ -16,7 +16,7 @@ public class ScoresSynchronization extends ResourcesSynchronization<Score> {
         super(context, "Score", new ResourcesCallable<List<Score>>() {
             @Override
             public Call<List<Score>> getCallable() {
-                return CarControllerAPIHelper.getApiObject().getScores();
+                return new CarControllerAPIHelper().getApiObject().getScores();
             }
         }, AppDatabase.getInstance(context).getScoreDao(), dialog, new AdsSynchronization(context, dialog));
     }

@@ -47,7 +47,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login();
+                String username = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                login(username, password);
             }
         });
         
@@ -59,10 +61,8 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void login(){
-        String username = usernameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-        Call<User> call = CarControllerAPIHelper.getApiObject().login(getAuthToken(username, password));
+    private void login(String username, String password) {
+        Call<User> call = new CarControllerAPIHelper().getApiObject().login(getAuthToken(username, password));
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

@@ -16,7 +16,7 @@ public class GamesSynchronization extends ResourcesSynchronization<Game>{
         super(context, "Game", new ResourcesCallable<List<Game>>() {
             @Override
             public Call<List<Game>> getCallable() {
-                return CarControllerAPIHelper.getApiObject().getGames();
+                return new CarControllerAPIHelper().getApiObject().getGames();
             }
         }, AppDatabase.getInstance(context).getGameDao(), dialog, new ScoresSynchronization(context, dialog));
     }

@@ -5,6 +5,8 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 @Entity
 public class Game {
 
@@ -47,5 +49,16 @@ public class Game {
     @Override
     public String toString() {
         return this.gameName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Game game = (Game) o;
+        return Objects.equals(id, game.id) && Objects.equals(gameTag, game.gameTag) && Objects.equals(gameName, game.gameName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, gameTag, gameName);
     }
 }

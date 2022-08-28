@@ -38,4 +38,6 @@
     <string name="warning_form_validation">Form validation error. Please, verify the values specified in the form.</string>
     <string name="welcome_message">Welcome,\u0020</string>
     <string name="success_create_account">Account successfully created</string>
+    <string name="auth_error_account_deletion">Authentication error (user has already been deleted)</string>
+    <string name="warning_auth_error">Authentication error</string>
 </resources>
