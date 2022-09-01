@@ -3,7 +3,6 @@ package com.example.carcontrollingapp.utils;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.matcher.BoundedMatcher;
 
@@ -194,7 +193,7 @@ public class CustomMatchers {
                 TextView date = viewHolder.itemView.findViewById(R.id.date_text_view);
 
                 return value.getText().toString().equals(score.getScore().toString()) &&
-                        date.getText().toString().equals(date.toString());
+                        date.getText().toString().equals(score.getDate());
             }
         };
     }

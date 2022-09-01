@@ -45,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
     private Button updateAccountButton;
     private Button deleteAccountButton;
     private Spinner gameSpinner;
+    private TextView warningNoDataTextView;
     private RecyclerView historyScoreRecyclerView;
 
     private GameDao gameDao;
@@ -65,6 +66,7 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
         updateAccountButton = findViewById(R.id.update_account_button);
         deleteAccountButton = findViewById(R.id.delete_account_button);
         gameSpinner = findViewById(R.id.game_spinner);
+        warningNoDataTextView = findViewById(R.id.warning_no_data_text_view);
         historyScoreRecyclerView = findViewById(R.id.history_scores_recycler_view);
 
         gameDao = AppDatabase.getInstance(this).getGameDao();
@@ -78,14 +80,24 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
         gameDao.getAllRecordsTask(new OnResultListener<List<Game>>() {
             @Override
             public void onResult(List<Game> result) {
-                ArrayAdapter<Game> adapter = new ArrayAdapter<>(ProfileActivity.this,
-                        android.R.layout.simple_spinner_item, result);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                gameSpinner.setOnItemSelectedListener(ProfileActivity.this);
-                gameSpinner.setAdapter(adapter);
+                if (result.size() == 0){
+                    gameSpinner.setVisibility(View.GONE);
+                    historyScoreRecyclerView.setVisibility(View.GONE);
+                    warningNoDataTextView.setVisibility(View.VISIBLE);
+                }else{
+                    gameSpinner.setVisibility(View.VISIBLE);
+                    historyScoreRecyclerView.setVisibility(View.VISIBLE);
+                    warningNoDataTextView.setVisibility(View.GONE);
 
-                Game game = (Game) gameSpinner.getSelectedItem();
-                updateScoreRecyclerView(game);
+                    ArrayAdapter<Game> adapter = new ArrayAdapter<>(ProfileActivity.this,
+                            android.R.layout.simple_spinner_item, result);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    gameSpinner.setOnItemSelectedListener(ProfileActivity.this);
+                    gameSpinner.setAdapter(adapter);
+
+                    Game game = (Game) gameSpinner.getSelectedItem();
+                    updateScoreRecyclerView(game);
+                }
             }
         }).execute();
     }
