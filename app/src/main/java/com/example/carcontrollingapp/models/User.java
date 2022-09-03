@@ -48,8 +48,7 @@ public class User {
      * @return a boolean indicating if the user is authenticated.
      */
     public static boolean isUserAuthenticated(Context context){
-        SharedPreferences sp = context.
-                getSharedPreferences(context.getString(R.string.sp_filename), MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.sp_filename), MODE_PRIVATE);
 
         return (sp.getString(context.getString(R.string.sp_username),null) != null) &&
                 (sp.getString(context.getString(R.string.sp_email),null) != null) &&

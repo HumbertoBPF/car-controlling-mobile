@@ -3,36 +3,22 @@ package com.example.carcontrollingapp.validators;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static com.example.carcontrollingapp.retrofit.CarControllerAPIHelper.getAuthToken;
+import static com.example.carcontrollingapp.utils.Tools.assertUserIsNotInAPIDatabase;
 import static com.example.carcontrollingapp.utils.Tools.fillAndSubmitAccountForm;
 
-import android.content.Intent;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.rule.ActivityTestRule;
 
 import com.example.carcontrollingapp.R;
-import com.example.carcontrollingapp.activities.MainActivity;
+import com.example.carcontrollingapp.activities.UITests;
 import com.example.carcontrollingapp.models.User;
-import com.example.carcontrollingapp.retrofit.CarControllerAPI;
-import com.example.carcontrollingapp.retrofit.CarControllerAPIHelperTest;
 
-import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import retrofit2.Call;
-import retrofit2.Response;
-
 @RunWith(AndroidJUnit4.class)
-public class SignupValidatorsTests {
-    @Rule
-    public ActivityTestRule<MainActivity> mainActivityRule
-            = new ActivityTestRule<>(MainActivity.class, true, false);
-    private final CarControllerAPI carControllerAPI = new CarControllerAPIHelperTest().getApiObject();
+public class SignupValidatorsTests extends UITests {
     private final User testUser
             = new User("AndroidTestUser", "android.test.user@test.com", "android-test-password");
 
@@ -97,17 +83,14 @@ public class SignupValidatorsTests {
     }
 
     private void testInvalidSignup(String username, String email, String password, String passwordConfirmation) throws IOException, InterruptedException {
-        mainActivityRule.launchActivity(new Intent());
-
+        // Accessing the signup form
         onView(withId(R.id.action_account)).perform(click());
         onView(withId(R.id.create_account_link)).perform(click());
-        // Filling the signup form
+
         fillAndSubmitAccountForm(username, email, password, passwordConfirmation);
         Thread.sleep(5000);
-        // Verifying if the user was created in the API database
-        Call<User> loginCall = carControllerAPI.login(getAuthToken(username, password));
-        Response<User> response = loginCall.execute();
-        Assert.assertEquals(403, response.code());
+        // Verifying if the user was not created in the API database
+        assertUserIsNotInAPIDatabase(username, password);
     }
 
 }

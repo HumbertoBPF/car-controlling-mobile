@@ -15,12 +15,7 @@ import static com.example.carcontrollingapp.utils.Tools.deleteUserAPIDatabase;
 import static com.example.carcontrollingapp.utils.Tools.fillAndSubmitAccountForm;
 import static org.hamcrest.CoreMatchers.allOf;
 
-import android.content.Context;
-import android.content.Intent;
-
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.rule.ActivityTestRule;
 
 import com.example.carcontrollingapp.R;
 import com.example.carcontrollingapp.models.User;
@@ -28,8 +23,6 @@ import com.example.carcontrollingapp.retrofit.CarControllerAPIHelperTest;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,29 +32,17 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 @RunWith(AndroidJUnit4.class)
-public class FormUserActivityTests {
-    @Rule
-    public ActivityTestRule<MainActivity> mainActivityRule
-            = new ActivityTestRule<>(MainActivity.class, true, false);
-    private final Context context = ApplicationProvider.getApplicationContext();
+public class FormUserActivityTests extends UITests{
     private final User testUser
             = new User("AndroidTestUser", "android.test.user@test.com", "android-test-password");
-
-    @Before
-    public void setup() throws IOException {
-        // Deleting shared preferences
-        context.deleteSharedPreferences(context.getString(R.string.sp_filename));
-        // Deleting test user in the API database
-        deleteUserAPIDatabase(testUser);
-    }
+    private final User updatedUser =
+            new User("AndroidTestUserUpdated", "android.test.user.updated@test.com", "android-test-password-updated");
 
     @Test
     public void testSignup() throws IOException, InterruptedException {
-        mainActivityRule.launchActivity(new Intent());
-
         onView(withId(R.id.action_account)).perform(click());
         onView(withId(R.id.create_account_link)).perform(click());
-        // Filling the signup form
+
         fillAndSubmitAccountForm(testUser.getUsername(), testUser.getEmail(), testUser.getPassword(), testUser.getPassword());
         Thread.sleep(5000);
         // Verifying if the user was created in the API database
@@ -77,55 +58,40 @@ public class FormUserActivityTests {
         if (returnedUser == null){
             Assert.fail("No user returned by login request");
         }
-
+        // Checking email and username returned by the API
         Assert.assertEquals(testUser.getEmail(), returnedUser.getEmail());
         Assert.assertEquals(testUser.getUsername(), returnedUser.getUsername());
     }
 
     @Test
     public void testUpdateExistingAccount() throws IOException, InterruptedException {
-        String newUsername = "AndroidTestUserUpdated";
-        String newEmail = "android.test.user.updated@test.com";
-        String newPassword = "android-test-password-updated";
-
-        User newUser = new User(newUsername, newEmail, newPassword);
-
-        deleteUserAPIDatabase(newUser);
         createUserAPIDatabase(testUser);
 
         saveUserCredentials(context, testUser.getUsername(), testUser.getEmail(), testUser.getPassword());
 
-        mainActivityRule.launchActivity(new Intent());
-
         onView(withId(R.id.action_account)).perform(click());
         onView(withId(R.id.update_account_button)).perform(click());
 
-        // Filling the form with the new credentials
-        fillAndSubmitAccountForm(newUsername, newEmail, newPassword, newPassword);
+        fillAndSubmitAccountForm(updatedUser.getUsername(), updatedUser.getEmail(), updatedUser.getPassword(), updatedUser.getPassword());
         // Waiting for FormUserActivity to be dismissed
         Thread.sleep(5000);
         // Verifying if the updated credentials are shown in the ProfileActivity
-        onView(allOf(withId(R.id.username_text_view), withText(context.getString(R.string.username_label) + ": " + newUsername)))
+        onView(allOf(withId(R.id.username_text_view), withText(context.getString(R.string.username_label) + ": " + updatedUser.getUsername())))
                 .check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.email_text_view), withText(context.getString(R.string.email_label) + ": " + newEmail)))
+        onView(allOf(withId(R.id.email_text_view), withText(context.getString(R.string.email_label) + ": " + updatedUser.getEmail())))
                 .check(matches(isDisplayed()));
+
+        deleteUserAPIDatabase(updatedUser);
     }
 
     @Test
     public void testUpdateNonExistingUser() throws InterruptedException {
-        String newUsername = "AndroidTestUserUpdated";
-        String newEmail = "android.test.user.updated@test.com";
-        String newPassword = "android-test-password-updated";
-
         saveUserCredentials(context, testUser.getUsername(), testUser.getEmail(), testUser.getPassword());
-
-        mainActivityRule.launchActivity(new Intent());
 
         onView(withId(R.id.action_account)).perform(click());
         onView(withId(R.id.update_account_button)).perform(click());
 
-        // Filling the form with the new credentials
-        fillAndSubmitAccountForm(newUsername, newEmail, newPassword, newPassword);
+        fillAndSubmitAccountForm(updatedUser.getUsername(), updatedUser.getEmail(), updatedUser.getPassword(), updatedUser.getPassword());
         // Waiting for FormUserActivity to be dismissed
         Thread.sleep(5000);
         // Verifies if the user returned to the MainActivity

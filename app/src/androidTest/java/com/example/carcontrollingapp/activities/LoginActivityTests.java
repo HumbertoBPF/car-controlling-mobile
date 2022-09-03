@@ -11,13 +11,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static com.example.carcontrollingapp.utils.Tools.createUserAPIDatabase;
 import static com.example.carcontrollingapp.utils.Tools.deleteUserAPIDatabase;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.rule.ActivityTestRule;
 
 import com.example.carcontrollingapp.R;
 import com.example.carcontrollingapp.models.User;
@@ -25,35 +21,23 @@ import com.example.carcontrollingapp.models.User;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
 @RunWith(AndroidJUnit4.class)
-public class LoginActivityTests {
-    @Rule
-    public ActivityTestRule<MainActivity> mainActivityRule
-            = new ActivityTestRule<>(MainActivity.class, true, false);
-    private final Context context = ApplicationProvider.getApplicationContext();
+public class LoginActivityTests extends UITests{
     private final User testUser
             = new User("AndroidTestUser", "android.test.user@test.com", "android-test-password");
 
     @Before
     public void setup() throws IOException {
-        // Deleting shared preferences
-        context.deleteSharedPreferences(context.getString(R.string.sp_filename));
-        // Deleting test user in the API database
-        deleteUserAPIDatabase(testUser);
-        // Creates account which we are going to try to login
         createUserAPIDatabase(testUser);
     }
 
     @Test
-    public void testSuccessfulLogin() throws IOException, InterruptedException {
-        mainActivityRule.launchActivity(new Intent());
-
+    public void testSuccessfulLogin() throws InterruptedException {
         onView(withId(R.id.action_account)).perform(click());
         onView(withId(R.id.username_edit_text)).perform(typeText(testUser.getUsername()), closeSoftKeyboard());
         onView(withId(R.id.password_edit_text)).perform(typeText(testUser.getPassword()), closeSoftKeyboard());
@@ -63,8 +47,7 @@ public class LoginActivityTests {
         // Verifying if the logout button is visible
         onView(withId(R.id.action_logout)).check(matches(isDisplayed()));
 
-        SharedPreferences sp = context.
-                getSharedPreferences(context.getString(R.string.sp_filename), MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.sp_filename), MODE_PRIVATE);
         String spUsername = sp.getString(context.getString(R.string.sp_username), null);
         String spEmail = sp.getString(context.getString(R.string.sp_email),null);
         String spPassword = sp.getString(context.getString(R.string.sp_password),null);
@@ -76,9 +59,6 @@ public class LoginActivityTests {
 
     @After
     public void tearDown() throws IOException {
-        // Deleting shared preferences
-        context.deleteSharedPreferences(context.getString(R.string.sp_filename));
-        // Deleting test user in the API database
         deleteUserAPIDatabase(testUser);
     }
 

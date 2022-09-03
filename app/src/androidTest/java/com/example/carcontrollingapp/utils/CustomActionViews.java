@@ -13,7 +13,7 @@ import androidx.test.espresso.util.TreeIterables;
 import org.hamcrest.Matcher;
 
 import java.util.concurrent.TimeoutException;
-// Custom ActionViews to wait views to be visible/hidden
+
 public class CustomActionViews {
     /**
      * Perform action of waiting until the element is accessible and shown.

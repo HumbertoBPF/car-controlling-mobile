@@ -147,9 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!isUserAuthenticated(this)){
-            menu.findItem(R.id.action_logout).setVisible(false);
-        }
+        menu.findItem(R.id.action_logout).setVisible(isUserAuthenticated(this));
         return super.onPrepareOptionsMenu(menu);
     }
 

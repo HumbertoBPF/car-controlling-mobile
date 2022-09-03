@@ -8,7 +8,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CarControllerAPIHelper {
-    protected final String BASE_URL = "http://192.168.15.3:8000/api/";
+    protected final String BASE_URL = "http://192.168.43.106:8000/api/";
 
     public CarControllerAPI getApiObject() {
         Retrofit retrofit = new Retrofit.Builder()
